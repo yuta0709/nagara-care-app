@@ -1,0 +1,84 @@
+あなたは、最新のTypeScript、Node.js、Next.jsのApp Router、React、shadcn/ui、Radix UI、Tailwind CSSの専門家です。以下のガイドラインに従ってください。
+
+### shadcn/ui とは
+shadcn/ui は、Radix UI を基盤とし、Tailwind CSS でスタイリングされた再利用可能な UI コンポーネントライブラリです。Next.js との相性が良く、シンプルなコマンドでコンポーネントを追加・カスタマイズできます。
+
+### shadcn/ui のコンポーネント追加手順
+1. **コンポーネントの追加**:
+   必要なコンポーネントを追加するには、以下のコマンドを使用します。
+   ```bash
+   npx shadcn@latest add [コンポーネント名]
+   ```
+   例: `button`コンポーネントを追加する場合
+   ```bash
+   npx shadcn@latest add button
+   ```
+
+2. **インポートパスの確認**:
+   コンポーネントを追加すると、デフォルトで`src/components/ui/`ディレクトリに配置されます。インポートする際は、以下のように記述します。
+   ```javascript
+   import { Button } from "@/components/ui/button";
+   ```
+
+3. **インポート先ディレクトリの変更**:
+   デフォルトのディレクトリ構造を変更したい場合、プロジェクトルートにある`components.json`ファイルの`aliases.ui`の値を編集します。
+   ```json
+   {
+     "aliases": {
+       "ui": "@/app/_components/ui"
+     }
+   }
+   ```
+   これにより、コンポーネントは指定したディレクトリに追加されます。
+
+4. **コンポーネントの使用**:
+   追加したコンポーネントは、通常のReactコンポーネントとして使用できます。
+   ```jsx
+   import { Button } from "@/components/ui/button";
+
+   function App() {
+     return <Button>Click me</Button>;
+   }
+
+   export default App;
+   ```
+
+
+### App Routerのディレクトリ構造
+Next.jsのApp Router（appディレクトリ）を使用する場合、ディレクトリ構造は以下のようになります。
+
+```
+/my-project
+│── app/
+│   │── layout.tsx  # 全体のレイアウトコンポーネント
+│   │── page.tsx    # ルートページ
+│   │── loading.tsx # グローバルなローディングUI
+│   │── error.tsx   # エラーハンドリング用コンポーネント
+│   ├── dashboard/
+│   │   │── page.tsx  # /dashboard のエントリポイント
+│   │   │── loading.tsx # /dashboard 用のローディングUI
+│   │   │── error.tsx   # /dashboard のエラーハンドリング
+│   ├── api/
+│   │   ├── route.ts  # APIエンドポイント (GET, POST など)
+│   ├── components/
+│   │   ├── Button.tsx  # 再利用可能なボタンコンポーネント
+│   ├── styles/
+│   │   ├── globals.css # 全体のスタイル
+│── public/
+│── package.json
+│── tsconfig.json
+│── next.config.js
+```
+
+#### 主要なディレクトリとファイルの説明
+- `app/` - Next.jsのルートディレクトリ。各ページごとにフォルダを作成し、`page.tsx`を配置する。
+- `layout.tsx` - 全ページに共通するレイアウト。
+- `loading.tsx` - Suspenseを用いたローディングUI。
+- `error.tsx` - `error.tsx`を配置することでページごとのエラーハンドリングが可能。
+- `api/` - APIルートを定義。
+- `components/` - 再利用可能なUIコンポーネントを格納。
+- `styles/` - グローバルなスタイルファイル。
+
+この構造に基づいてプロジェクトを整理すると、Next.jsのApp Routerを最大限活用できます。
+
+データフェッチ、レンダリング、ルーティングに関しては、Next.jsの公式ドキュメントに従ってください。

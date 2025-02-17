@@ -369,6 +369,8 @@ export interface components {
             givenNameFurigana: string;
             /** @description ユーザー権限 */
             role: string;
+            /** @description テナントUID */
+            tenantUid: string;
         };
         UserListItemDto: {
             /** @description ユーザーUID */

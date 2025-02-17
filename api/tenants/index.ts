@@ -1,12 +1,25 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, UseQueryOptions } from "@tanstack/react-query";
 import { useFetchClient } from "../fetch-client";
-import type { components } from "../openapi-generated";
+import type { components, paths } from "../openapi-generated";
 
-export function useTenants() {
+type TenantsResponse = NonNullable<
+  paths["/tenants"]["get"]["responses"]["200"]["content"]["application/json"]
+>;
+
+export function useTenants(
+  options?: Partial<UseQueryOptions<TenantsResponse>>
+) {
   const client = useFetchClient();
   return useQuery({
     queryKey: ["tenants"],
-    queryFn: () => client.GET("/tenants", {}).then((res) => res.data),
+    queryFn: async () => {
+      const res = await client.GET("/tenants", {});
+      return res.data!;
+    },
+    staleTime: 1000 * 60 * 5, // 5分間はキャッシュを使用
+    refetchOnWindowFocus: false,
+    retry: false,
+    ...options,
   });
 }
 

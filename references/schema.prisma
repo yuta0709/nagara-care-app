@@ -1,0 +1,191 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MealTime {
+  BREAKFAST
+  LUNCH
+  DINNER
+}
+
+enum BeverageType {
+  WATER
+  TEA
+  OTHER
+}
+
+enum DailyStatus {
+  NORMAL
+  WARNING
+  ALERT
+}
+
+enum UserRole {
+  GLOBAL_ADMIN
+  TENANT_ADMIN
+  CAREGIVER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+model Tenant {
+  uid       String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+
+  users              User[]
+  residents          Resident[]
+  foodRecords        FoodRecord[]
+  bathRecords        BathRecord[]
+  beverageRecords    BeverageRecord[]
+  eliminationRecords EliminationRecord[]
+  dailyRecords       DailyRecord[]
+}
+
+model User {
+  uid                String   @id @default(uuid())
+  loginId            String   @unique
+  passwordDigest     String
+  familyName         String
+  givenName          String
+  familyNameFurigana String
+  givenNameFurigana  String
+  role               UserRole
+  tenantUid          String?
+  tenant             Tenant?  @relation(fields: [tenantUid], references: [uid])
+  createdAt          DateTime @default(now())
+
+  foodRecords        FoodRecord[]
+  bathRecords        BathRecord[]
+  beverageRecords    BeverageRecord[]
+  eliminationRecords EliminationRecord[]
+  dailyRecords       DailyRecord[]
+}
+
+model Resident {
+  uid                String   @id @default(uuid())
+  tenantUid          String
+  tenant             Tenant   @relation(fields: [tenantUid], references: [uid])
+  familyName         String
+  givenName          String
+  familyNameFurigana String
+  givenNameFurigana  String
+  dateOfBirth        DateTime
+  gender             Gender
+  admissionDate      DateTime
+  createdAt          DateTime @default(now())
+
+  foodRecords        FoodRecord[]
+  bathRecords        BathRecord[]
+  beverageRecords    BeverageRecord[]
+  eliminationRecords EliminationRecord[]
+  dailyRecords       DailyRecord[]
+}
+
+model FoodRecord {
+  uid       String @id @default(uuid())
+  tenantUid String
+  tenant    Tenant @relation(fields: [tenantUid], references: [uid])
+
+  caregiverUid String
+  caregiver    User   @relation(fields: [caregiverUid], references: [uid])
+
+  residentUid String
+  resident    Resident @relation(fields: [residentUid], references: [uid])
+
+  recordedAt           DateTime
+  notes                String?
+  mealTime             MealTime
+  mainCoursePercentage Int
+  sideDishPercentage   Int
+  soupPercentage       Int
+  beverageType         BeverageType
+  beverageVolume       Int
+}
+
+model BathRecord {
+  uid       String @id @default(uuid())
+  tenantUid String
+  tenant    Tenant @relation(fields: [tenantUid], references: [uid])
+
+  caregiverUid String
+  caregiver    User   @relation(fields: [caregiverUid], references: [uid])
+
+  residentUid String
+  resident    Resident @relation(fields: [residentUid], references: [uid])
+
+  recordedAt DateTime
+  notes      String?
+  bathMethod String
+}
+
+model BeverageRecord {
+  uid       String @id @default(uuid())
+  tenantUid String
+  tenant    Tenant @relation(fields: [tenantUid], references: [uid])
+
+  caregiverUid String
+  caregiver    User   @relation(fields: [caregiverUid], references: [uid])
+
+  residentUid String
+  resident    Resident @relation(fields: [residentUid], references: [uid])
+
+  recordedAt   DateTime
+  notes        String?
+  beverageType BeverageType
+  volume       Int
+}
+
+model EliminationRecord {
+  uid       String @id @default(uuid())
+  tenantUid String
+  tenant    Tenant @relation(fields: [tenantUid], references: [uid])
+
+  caregiverUid String
+  caregiver    User   @relation(fields: [caregiverUid], references: [uid])
+
+  residentUid String
+  resident    Resident @relation(fields: [residentUid], references: [uid])
+
+  recordedAt          DateTime
+  notes               String?
+  eliminationMethod   String
+  hasFeces            Boolean
+  fecalIncontinence   Boolean?
+  fecesAppearance     String?
+  fecesVolume         Int?
+  hasUrine            Boolean
+  urinaryIncontinence Boolean?
+  urineAppearance     String?
+  urineVolume         Int?
+}
+
+model DailyRecord {
+  uid       String @id @default(uuid())
+  tenantUid String
+  tenant    Tenant @relation(fields: [tenantUid], references: [uid])
+
+  caregiverUid String
+  caregiver    User   @relation(fields: [caregiverUid], references: [uid])
+
+  residentUid String
+  resident    Resident @relation(fields: [residentUid], references: [uid])
+
+  recordedAt  DateTime
+  notes       String?
+  dailyStatus DailyStatus?
+}

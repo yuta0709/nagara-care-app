@@ -1,13 +1,14 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useFetchClient } from "./fetch-client";
+import { useFetchClient, publicFetchClient } from "./fetch-client";
 import type { components } from "./openapi-generated";
 
 // Auth
 export function useSignIn() {
-  const client = useFetchClient();
   return useMutation({
     mutationFn: (data: components["schemas"]["SignInDto"]) =>
-      client.POST("/auth/login", { body: data }).then((res) => res.data),
+      publicFetchClient
+        .POST("/auth/login", { body: data })
+        .then((res) => res.data),
   });
 }
 
@@ -84,13 +85,7 @@ export function useDeleteUser() {
 }
 
 // Tenants
-export function useTenants() {
-  const client = useFetchClient();
-  return useQuery({
-    queryKey: ["tenants"],
-    queryFn: () => client.GET("/tenants", {}).then((res) => res.data),
-  });
-}
+export { useTenants } from "./tenants";
 
 export function useCreateTenant() {
   const client = useFetchClient();

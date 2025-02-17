@@ -13,3 +13,8 @@ curl -o "$PROJECT_ROOT/api-schema/openapi.yaml" \
     "https://raw.githubusercontent.com/yuta0709/nagara-care-api/main/openapi.yaml"
 
 echo "OpenAPI schema has been updated successfully!"
+
+# 型定義を生成
+npx openapi-typescript "$PROJECT_ROOT/api-schema/openapi.yaml" --output "$PROJECT_ROOT/api/openapi-generated.d.ts"
+
+echo "TypeScript type definitions have been generated successfully!"

@@ -10,10 +10,13 @@
     "sync-openapi": "./scripts/sync-openapi.sh"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.66.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "jotai": "^2.12.1",
     "lucide-react": "^0.475.0",
     "next": "15.1.7",
+    "openapi-fetch": "^0.13.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.0.1",
